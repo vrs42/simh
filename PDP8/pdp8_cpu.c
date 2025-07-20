@@ -787,8 +787,8 @@ return SCPE_OK;
    than the straight-8, is the least capable model after the PDP-5.
 
    Model        Limitations
-   5            No IAC rotate, no CMA rotate, no EAE, 4K maximum, slower
-                PC at 0000, Interrupts at 0001, no DMA (data break)
+   5            No IAC rotate, no CMA rotate, slower PC at 0000,
+   		Interrupts at 0001
    8/S          No IAC rotate, no CMA rotate, no EAE, 8K maximum, 15x slower
    (straight) 8 No IAC rotate, IOT 6004 is special, no SWP, no SCL
                 Nonexistent memory reference is special
@@ -1461,10 +1461,7 @@ do_pdp8()
         MQ = LAC & 07777;
         LAC = LAC & 010000 | temp;
 */
-        if (MODEL < PDP8I)
-            temp = 0;                                   /* no SWP */
-        else
-            temp = MQ;                                  /* group 3 */
+        temp = MQ;                                      /* group 3 */
         if (IR & 0200)                                  /* CLA */
             if (MODEL != PDP8L)                         /* NOP on 8/L */
                 LAC = LAC & 010000;
@@ -1475,6 +1472,8 @@ do_pdp8()
             } else {
                 MQ = LAC & 07777;
                 LAC = LAC & 010000;
+                if (MODEL < PDP8I)
+                    temp = 0;                           /* no SWP */
             }
         }
         if (IR & 0100)                                  /* MQA */
