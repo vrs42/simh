@@ -205,7 +205,7 @@
 #define UNIT_V_MSIZE    (UNIT_V_UF + 1)                 /* memory size */
 #define UNIT_MSIZE      (1 << UNIT_V_MSIZE)
 #define UNIT_V_NOTS     (UNIT_V_UF + 2)                 /* time share */
-#define UNIT_NOTS       (1 << UNIT_V_MODEL)
+#define UNIT_NOTS       (1 << UNIT_V_NOTS)
 #define UNIT_V_MODEL    (UNIT_V_UF + 3)                 /* model */
 #define UNIT_MODEL      (1 << UNIT_V_MODEL)
 #define OP_KSF          06031                           /* for idle */
@@ -240,7 +240,7 @@ int32 LSR = 0;                                          /* LINC Left Switches */
 int32 SNS = 0;                                          /* LINC SNS Switches */
 int32 SXL = 0;                                          /* LINC Sense Lines */
 int32 AD12[040] = { 0 };                                /* AD12 registers */
-int32 RELAYS = 0;                                       /* Relay register */
+int32 RELAYS = 0;					/* Relay register */
 t_bool LINC = FALSE;                                    /* In LINC mode */
 int32 FLO = 0;                                          /* LINC Switches */
 int32 ESF = 0;                                          /* LINC Special Func */
@@ -251,7 +251,7 @@ int32 tsc_enb = 0;                                      /* TSC8-75 enabled */
 int32 dmm_enb = 0;                                      /* TSC8-75 enabled */
 uint8 tm[0100] = { 0 };                                 /* Trap masks */
 uint8 vp[010];                                          /* V. field to phys. */
-#define VP(FLD) (UF? vp[FLD>>12]<<12: FLD)		/* macro to use it */
+#define VP(FLD) (UF? vp[FLD>>12]<<12: FLD)              /* macro to use it */
 int32 cpu_astop = 0;                                    /* address stop */
 int16 pcq[PCQ_SIZE] = { 0 };                            /* PC queue */
 int32 pcq_p = 0;                                        /* PC queue ptr */
@@ -418,7 +418,7 @@ while (reason == 0) {                                   /* loop until halted */
         } else
             SF = (UF << 6) | (IF >> 9) | (DF >> 12);    /* form save field */
         if (MODEL == VT78)
-                SF &= ~00004;
+            SF &= ~00004;
         PCQ_ENTRY (IF | PC);                            /* save old PC w/ IF */
         IF = IB = DF = UF = UB = 0;                     /* clear mem ext */
         if (LINC) {
@@ -1737,25 +1737,25 @@ do_pdp8()
         device = (IR >> 3) & 077;                       /* device = IR<3:8> */
         pulse = IR & 07;                                /* pulse = IR<9:11> */
         if (UF) {                                       /* Privileged? */
-            int dotrap = 1;				/* Set up default */
-            if (dmm_enb) {				/* DMM special cases? */
-                dotrap = !tm[device];			/* DMM default */
-                if ((device & 070) == 020) {		/* 062xx? */
-                    if ((pulse == 0) || (pulse & 04)) {	/* 62x[04567]? */
-                        dotrap = 1;			/* Always trap */
+            int dotrap = 1;                             /* Set up default */
+            if (dmm_enb) {                              /* DMM special cases? */
+                dotrap = !tm[device];                   /* DMM default */
+                if ((device & 070) == 020) {            /* 062xx? */
+                    if ((pulse == 0) || (pulse & 04)) { /* 62x[04567]? */
+                        dotrap = 1;                     /* Always trap */
                     }
                 }
                 if ((IR == 06006) || (IR == 06214) || (IR == 06224)) {
-                    dotrap = 0;				/* Never trap */
+                    dotrap = 0;                               /* Never trap */
                 }
             }
             if (dotrap) {
-                int_req = int_req | INT_UF;             /* request intr */
-                tsc_ir = IR;                            /* save instruction */
-                if ((IR & 07707) == 06201)              /* set/clear flag */
-                    tsc_cdf = 1;
-                else tsc_cdf = 0;
-                break;
+            int_req = int_req | INT_UF;                 /* request intr */
+            tsc_ir = IR;                                /* save instruction */
+            if ((IR & 07707) == 06201)                  /* set/clear flag */
+                tsc_cdf = 1;
+            else tsc_cdf = 0;
+            break;
             }
         }
         iot_data = LAC & 07777;                         /* AC unchanged */
@@ -1801,8 +1801,8 @@ do_pdp8()
                       (((int_req & INT_ALL) != 0) << 9) |
                       (((int_req & INT_ION) != 0) << 7) | SF;
                 if (MODEL == VT78) {
-                    if (LAC & 00400) /* II */
-                        LAC &= ~01000; /* Clear IR in AC */
+                    if (LAC & 00400)                    /* II */
+                        LAC &= ~01000;                  /* Clear IR in AC */
                 }
                 break;
 
@@ -1849,12 +1849,12 @@ do_pdp8()
             break;                                      /* end case 0 */
 
         case 020:
-            if (pulse == 0) {				/* 6200 is CDIF */
-		DF = IF;
+            if (pulse == 0) {                           /* 6200 is CDIF */
+              DF = IF;
                 break;
             }
             /* FALL THROUGH */
-	case 021:case 022:case 023:
+        case 021:case 022:case 023:
         case 024:case 025:case 026:case 027:            /* memory extension */
             switch (pulse) {                            /* decode IR<9:11> */
 
@@ -1865,14 +1865,14 @@ do_pdp8()
             case 2:                                     /* CIF */
                 IB = (IR & 0070) << 9;
                 if (MODEL == VT78)
-                        IB &= 0030 << 9;
+                    IB &= 0030 << 9;
                 int_req = int_req & ~INT_NO_CIF_PENDING;
                 break;
 
             case 3:                                     /* CDF CIF */
                 DF = IB = (IR & 0070) << 9;
                 if (MODEL == VT78)
-                        IB &= 0030 << 9;
+                    IB &= 0030 << 9;
                 int_req = int_req & ~INT_NO_CIF_PENDING;
                 break;
 
@@ -2682,13 +2682,14 @@ do_linc()
                     {   int row, col, scale, x, y;
 // BUGBUG: Should "tmp" here really be MQ?
                         tmp = M[ea];        /* Pattern word */
-                        if (ESF&200)
+                        if (ESF&200) {
                             scale = 4; /* Full size */
-                        else
+                            LAC &= 017740;
+                        } else {
                             scale = 2; /* Half size */
+                            LAC &= 017760;
+                        }
                         x = M[lifbase+1]; /* Includes Channel */
-                        /* Do this as documented for LINC */
-                        LAC &= 017740;
                         for (col=0; col < 2; col++) {
                             x += scale;
                             y = LAC & 07777;
@@ -2699,6 +2700,7 @@ do_linc()
                                 y += scale;
                             }
                         }
+                        LAC += 6 * scale;
                         M[lifbase+1] = x;
                     }
                     break;
