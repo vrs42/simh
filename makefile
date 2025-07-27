@@ -1739,6 +1739,18 @@ PDP8 = ${PDP8D}/pdp8_cpu.c ${PDP8D}/pdp8_clk.c ${PDP8D}/pdp8_df.c \
 PDP8_OPT = -I ${PDP8D}
 
 
+PDP12D = ${SIMHD}/PDP12
+PDP12_DISPLAY_OPT = -DDISPLAY_TYPE=DIS_VR14 -DPIX_SCALE=RES_FULL
+PDP12 = ${PDP12D}/pdp8_cpu.c ${PDP12D}/pdp8_clk.c ${PDP12D}/pdp8_df.c \
+	${PDP12D}/pdp8_dt.c ${PDP12D}/pdp8_lp.c ${PDP12D}/pdp8_mt.c \
+	${PDP12D}/pdp8_pt.c ${PDP12D}/pdp8_rf.c ${PDP12D}/pdp8_rk.c \
+	${PDP12D}/pdp8_rx.c ${PDP12D}/pdp8_sys.c ${PDP12D}/pdp8_tt.c \
+	${PDP12D}/pdp8_ttx.c ${PDP12D}/pdp8_rl.c ${PDP12D}/pdp8_tsc.c \
+	${PDP12D}/pdp8_td.c ${PDP12D}/pdp8_ct.c ${PDP12D}/pdp8_fpp.c \
+	${PDP12D}/pdp8_vc12.c ${PDP12D}/pdp8_lt.c ${DISPLAYL}
+PDP12_OPT = -DPDP12D -I ${PDP12D} ${DISPLAY_OPT} $(PDP12_DISPLAY_OPT) -g
+
+
 H316D = ${SIMHD}/H316
 H316 = ${H316D}/h316_stddev.c ${H316D}/h316_lp.c ${H316D}/h316_cpu.c \
 	${H316D}/h316_sys.c ${H316D}/h316_mt.c ${H316D}/h316_fhd.c \
@@ -2203,7 +2215,7 @@ PDQ3_OPT = -I ${PDQ3D}
 #
 # Build everything (not the unsupported/incomplete or experimental simulators)
 #
-ALL = pdp1 pdp4 pdp7 pdp8 pdp9 pdp15 pdp11 pdp10 \
+ALL = pdp1 pdp4 pdp7 pdp8 pdp9 pdp12 pdp15 pdp11 pdp10 \
 	vax microvax3900 microvax1 rtvax1000 microvax2 vax730 vax750 vax780 \
 	vax8200 vax8600 besm6 \
 	microvax2000 infoserver100 infoserver150vxt microvax3100 microvax3100e \
@@ -2275,6 +2287,15 @@ ${BIN}pdp8${EXE} : ${PDP8} ${SIM}
 	${CC} ${PDP8} ${SIM} ${PDP8_OPT} ${CC_OUTSPEC} ${LDFLAGS}
 ifneq (,$(call find_test,${PDP8D},pdp8))
 	$@ $(call find_test,${PDP8D},pdp8) ${TEST_ARG}
+endif
+
+pdp12 : ${BIN}pdp12${EXE}
+
+${BIN}pdp12${EXE} : ${PDP12} ${SIM}
+	${MKDIRBIN}
+	${CC} ${PDP12} ${SIM} ${PDP12_OPT} ${CC_OUTSPEC} ${LDFLAGS}
+ifneq (,$(call find_test,${PDP12D},pdp12))
+	$@ $(call find_test,${PDP12D},pdp12) ${TEST_ARG}
 endif
 
 pdp9 : ${BIN}pdp9${EXE}
@@ -2661,7 +2682,7 @@ endif
 
 sel32: ${BIN}sel32${EXE}
 
-${BIN}sel32${EXE}: ${SEL32} ${SIM}
+$3{BIN}sel32${EXE}: ${SEL32} ${SIM}
 	${MKDIRBIN}
 	${CC} ${SEL32} ${SIM} ${SEL32_OPT} $(CC_OUTSPEC) ${LDFLAGS}
 ifneq (,$(call find_test,${SEL32D},sel32))
