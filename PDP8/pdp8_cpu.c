@@ -477,6 +477,20 @@ pcq_r->qptr = pcq_p;                                    /* update pc q ptr */
 return reason;
 }                                                       /* end sim_instr */
 
+/* VC8E SR hack */
+void cpu_set_switches(unsigned long bits)
+{
+    /* just what we want; */
+    //BUGBUG: SR = bits;
+}
+
+unsigned long cpu_get_switches(void)
+{
+    return SR;
+}
+/* VC8E SR hack ends */
+
+
 /*
  * This sequence of instructions is a mix that hopefully
  * represents a resonable instruction set that is a close 

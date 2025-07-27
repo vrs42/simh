@@ -1730,13 +1730,15 @@ TT2500_OPT = -I ${TT2500D} ${DISPLAY_OPT} ${AIO_CCDEFS}
 
 
 PDP8D = ${SIMHD}/PDP8
+PDP8_DISPLAY_OPT = -DDISPLAY_TYPE=DIS_VR17 -DPIX_SCALE=RES_HALF -DPIX_SIZE=1
 PDP8 = ${PDP8D}/pdp8_cpu.c ${PDP8D}/pdp8_clk.c ${PDP8D}/pdp8_df.c \
 	${PDP8D}/pdp8_dt.c ${PDP8D}/pdp8_lp.c ${PDP8D}/pdp8_mt.c \
 	${PDP8D}/pdp8_pt.c ${PDP8D}/pdp8_rf.c ${PDP8D}/pdp8_rk.c \
 	${PDP8D}/pdp8_rx.c ${PDP8D}/pdp8_sys.c ${PDP8D}/pdp8_tt.c \
 	${PDP8D}/pdp8_ttx.c ${PDP8D}/pdp8_rl.c ${PDP8D}/pdp8_tsc.c \
-	${PDP8D}/pdp8_td.c ${PDP8D}/pdp8_ct.c ${PDP8D}/pdp8_fpp.c
-PDP8_OPT = -I ${PDP8D}
+	${PDP8D}/pdp8_td.c ${PDP8D}/pdp8_ct.c ${PDP8D}/pdp8_fpp.c \
+	${PDP8D}/pdp8_vc8.c ${DISPLAYL}
+PDP8_OPT = -I ${PDP8D} $(DISPLAY_OPT) $(PDP8_DISPLAY_OPT) -DUSE_DISPLAY -g
 
 
 PDP12D = ${SIMHD}/PDP12
@@ -1748,7 +1750,7 @@ PDP12 = ${PDP12D}/pdp8_cpu.c ${PDP12D}/pdp8_clk.c ${PDP12D}/pdp8_df.c \
 	${PDP12D}/pdp8_ttx.c ${PDP12D}/pdp8_rl.c ${PDP12D}/pdp8_tsc.c \
 	${PDP12D}/pdp8_td.c ${PDP12D}/pdp8_ct.c ${PDP12D}/pdp8_fpp.c \
 	${PDP12D}/pdp8_vc12.c ${PDP12D}/pdp8_lt.c ${DISPLAYL}
-PDP12_OPT = -DPDP12D -I ${PDP12D} ${DISPLAY_OPT} $(PDP12_DISPLAY_OPT) -g
+PDP12_OPT = -DPDP12D -I ${PDP12D} ${DISPLAY_OPT} $(PDP12_DISPLAY_OPT)
 
 
 H316D = ${SIMHD}/H316
@@ -2682,7 +2684,7 @@ endif
 
 sel32: ${BIN}sel32${EXE}
 
-$3{BIN}sel32${EXE}: ${SEL32} ${SIM}
+${BIN}sel32${EXE}: ${SEL32} ${SIM}
 	${MKDIRBIN}
 	${CC} ${SEL32} ${SIM} ${SEL32_OPT} $(CC_OUTSPEC) ${LDFLAGS}
 ifneq (,$(call find_test,${SEL32D},sel32))
