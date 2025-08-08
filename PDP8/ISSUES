@@ -1,7 +1,5 @@
-1.  Add VC8 support.
-2.  Add PDP12 directory and integrate VC12 support.
-3.  Fix known VC12 diagnostic issue.
-4.  Write TC12 support.
+1.  Fix VC8 support.
+2.  Write TC12 support.
 
 Bill's Issues:
 1.  Large commit
