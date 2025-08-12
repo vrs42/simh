@@ -67,7 +67,9 @@ extern DEVICE dt_dev, td_dev;
 extern DEVICE mt_dev, ct_dev;
 extern DEVICE vc12_dev;
 extern DEVICE ttix_dev, ttox_dev;
+#ifndef PDP12D
 extern DEVICE vc8_dev;
+#endif
 extern REG cpu_reg[];
 extern uint16 M[];
 
@@ -116,11 +118,12 @@ DEVICE *sim_devices[] = {
     &td_dev,
     &mt_dev,
     &ct_dev,
+#ifdef USE_DISPLAY
 #ifdef PDP12D
     &vc12_dev,
-#endif
-#ifdef USE_DISPLAY
+#else
     &vc8_dev,
+#endif
 #endif
     NULL
     };
